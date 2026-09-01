@@ -13,6 +13,8 @@ import {
   IonContent
 } from '@ionic/angular';
 
+import { Preferences } from '@capacitor/preferences';
+
 
 interface Carta {
 
@@ -83,6 +85,16 @@ export class HomePage implements OnInit {
   totalParejas = 8;
 
 
+  /*
+    Mejor resultado histórico.
+
+    null significa que todavía
+    no se ha completado ninguna partida.
+  */
+
+  mejorResultado: number | null = null;
+
+
   constructor(
 
     private cdr: ChangeDetectorRef
@@ -90,11 +102,112 @@ export class HomePage implements OnInit {
   ) {}
 
 
-  ngOnInit() {
+  async ngOnInit() {
 
-    this.cargarImagenes();
+    /*
+      Primero recuperamos el récord
+      guardado en el dispositivo.
+    */
+
+    await this.cargarMejorResultado();
+
+
+    /*
+      Después iniciamos el juego.
+    */
+
+    await this.cargarImagenes();
 
   }
+
+
+  /*
+    ==================================================
+    PERSISTENCIA DEL MEJOR RESULTADO
+    ==================================================
+  */
+
+
+  async cargarMejorResultado() {
+
+    try {
+
+      const resultado = await Preferences.get({
+
+        key: 'mejorResultado'
+
+      });
+
+
+      if (resultado.value !== null) {
+
+        this.mejorResultado =
+          Number(resultado.value);
+
+      }
+
+    } catch (error) {
+
+      console.error(
+
+        'Error cargando mejor resultado:',
+
+        error
+
+      );
+
+    }
+
+  }
+
+
+  async verificarMejorResultado() {
+
+    /*
+      Si nunca se ha guardado un récord,
+      la primera partida terminada se
+      convierte automáticamente en récord.
+    */
+
+    if (
+
+      this.mejorResultado === null ||
+
+      this.movimientos < this.mejorResultado
+
+    ) {
+
+      this.mejorResultado =
+        this.movimientos;
+
+
+      await Preferences.set({
+
+        key: 'mejorResultado',
+
+        value: this.movimientos.toString()
+
+      });
+
+
+      console.log(
+
+        'Nuevo mejor resultado:',
+
+        this.mejorResultado
+
+      );
+
+    }
+
+  }
+
+
+  /*
+    ==================================================
+    CARGA DE IMÁGENES
+    ==================================================
+  */
 
 
   async cargarImagenes() {
@@ -104,11 +217,6 @@ export class HomePage implements OnInit {
 
     this.error = '';
 
-
-    /*
-      Actualizamos inmediatamente la interfaz
-      para mostrar "Cargando imágenes..."
-    */
 
     this.cdr.detectChanges();
 
@@ -177,17 +285,18 @@ export class HomePage implements OnInit {
       this.cargando = false;
 
 
-      /*
-        Forzamos a Angular a actualizar
-        la pantalla después de terminar
-        la petición a la API.
-      */
-
       this.cdr.detectChanges();
 
     }
 
   }
+
+
+  /*
+    ==================================================
+    CREACIÓN DE CARTAS
+    ==================================================
+  */
 
 
   crearCartas() {
@@ -200,10 +309,6 @@ export class HomePage implements OnInit {
 
       (imagen, indice) => {
 
-
-        /*
-          Primera carta de la pareja
-        */
 
         cartasTemporales.push({
 
@@ -219,10 +324,6 @@ export class HomePage implements OnInit {
 
         });
 
-
-        /*
-          Segunda carta de la pareja
-        */
 
         cartasTemporales.push({
 
@@ -253,6 +354,13 @@ export class HomePage implements OnInit {
       );
 
   }
+
+
+  /*
+    ==================================================
+    BARAJAR CARTAS
+    ==================================================
+  */
 
 
   barajarCartas(
@@ -313,17 +421,19 @@ export class HomePage implements OnInit {
   }
 
 
+  /*
+    ==================================================
+    VOLTEAR CARTAS
+    ==================================================
+  */
+
+
   voltearCarta(
 
     carta: Carta
 
   ) {
 
-
-    /*
-      Bloquear clics mientras se
-      comparan dos cartas.
-    */
 
     if (this.bloqueado) {
 
@@ -332,22 +442,12 @@ export class HomePage implements OnInit {
     }
 
 
-    /*
-      No tocar cartas que ya
-      fueron encontradas.
-    */
-
     if (carta.encontrada) {
 
       return;
 
     }
 
-
-    /*
-      No seleccionar nuevamente
-      una carta descubierta.
-    */
 
     if (carta.descubierta) {
 
@@ -389,6 +489,13 @@ export class HomePage implements OnInit {
   }
 
 
+  /*
+    ==================================================
+    COMPARAR CARTAS
+    ==================================================
+  */
+
+
   compararCartas() {
 
 
@@ -426,16 +533,28 @@ export class HomePage implements OnInit {
       this.parejasEncontradas++;
 
 
+      /*
+        Cuando encontramos las 8 parejas,
+        la partida ha terminado.
+      */
+
+      if (
+
+        this.parejasEncontradas ===
+        this.totalParejas
+
+      ) {
+
+        void this.verificarMejorResultado();
+
+      }
+
+
       setTimeout(() => {
 
 
         this.reiniciarSeleccion();
 
-
-        /*
-          Actualizamos estadísticas
-          después de encontrar pareja.
-        */
 
         this.cdr.detectChanges();
 
@@ -466,11 +585,6 @@ export class HomePage implements OnInit {
         this.reiniciarSeleccion();
 
 
-        /*
-          Actualizamos las cartas
-          después de volverlas a ocultar.
-        */
-
         this.cdr.detectChanges();
 
 
@@ -479,6 +593,13 @@ export class HomePage implements OnInit {
     }
 
   }
+
+
+  /*
+    ==================================================
+    REINICIAR SELECCIÓN
+    ==================================================
+  */
 
 
   reiniciarSeleccion() {
@@ -494,21 +615,18 @@ export class HomePage implements OnInit {
   }
 
 
+  /*
+    ==================================================
+    NUEVO JUEGO
+    ==================================================
+  */
+
+
   async nuevoJuego() {
 
 
-    /*
-      Bloqueamos temporalmente
-      el tablero.
-    */
-
     this.bloqueado = true;
 
-
-    /*
-      Reiniciamos las cartas
-      seleccionadas.
-    */
 
     this.primeraCarta = null;
 
@@ -516,7 +634,11 @@ export class HomePage implements OnInit {
 
 
     /*
-      Reiniciamos estadísticas.
+      Reiniciamos únicamente
+      los datos de la partida actual.
+
+      IMPORTANTE:
+      mejorResultado NO se reinicia.
     */
 
     this.movimientos = 0;
@@ -524,43 +646,19 @@ export class HomePage implements OnInit {
     this.parejasEncontradas = 0;
 
 
-    /*
-      Eliminamos las imágenes
-      y cartas anteriores.
-    */
-
     this.imagenes = [];
 
     this.cartas = [];
 
 
-    /*
-      Actualizamos la interfaz
-      antes de pedir las nuevas imágenes.
-    */
-
     this.cdr.detectChanges();
 
-
-    /*
-      Obtenemos 8 nuevas imágenes
-      desde Dog CEO API.
-    */
 
     await this.cargarImagenes();
 
 
-    /*
-      Habilitamos nuevamente
-      el tablero.
-    */
-
     this.bloqueado = false;
 
-
-    /*
-      Refrescamos la interfaz final.
-    */
 
     this.cdr.detectChanges();
 

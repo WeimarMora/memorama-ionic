@@ -66,9 +66,9 @@ ion-title {
   display: grid;
 
   grid-template-columns:
-    repeat(2, 1fr);
+    repeat(3, 1fr);
 
-  gap: 10px;
+  gap: 8px;
 
   margin-bottom: 12px;
 }
@@ -81,7 +81,9 @@ ion-title {
   align-items: center;
   justify-content: center;
 
-  padding: 12px;
+  min-width: 0;
+
+  padding: 12px 6px;
 
   background: #ffffff;
 
@@ -103,7 +105,9 @@ ion-title {
 
   color: #6b7280;
 
-  font-size: 12px;
+  font-size: 11px;
+
+  text-align: center;
 }
 
 
@@ -215,7 +219,7 @@ ion-title {
 
 
 /* ==========================================
-   INTERIOR
+   INTERIOR DE LA CARTA
    ========================================== */
 
 .carta-interior {
@@ -338,15 +342,21 @@ ion-title {
   }
 
   .estadisticas {
+    gap: 6px;
+
     margin-bottom: 10px;
   }
 
   .estadistica {
-    padding: 9px;
+    padding: 9px 4px;
   }
 
   .estadistica .valor {
     font-size: 19px;
+  }
+
+  .estadistica .etiqueta {
+    font-size: 10px;
   }
 
   .boton-nuevo-juego {
