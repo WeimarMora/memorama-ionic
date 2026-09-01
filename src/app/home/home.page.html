@@ -1,0 +1,123 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Memorama</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="contenedor-juego">
+
+    <div class="encabezado-juego">
+
+      <h1>Memorama</h1>
+
+      <p>
+        Encuentra todas las parejas de perros
+      </p>
+
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="estadisticas">
+
+      <div class="estadistica">
+
+        <span class="valor">
+          {{ movimientos }}
+        </span>
+
+        <span class="etiqueta">
+          Movimientos
+        </span>
+
+      </div>
+
+      <div class="estadistica">
+
+        <span class="valor">
+          {{ parejasEncontradas }}/{{ totalParejas }}
+        </span>
+
+        <span class="etiqueta">
+          Parejas
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Botón Nuevo Juego -->
+    <button
+      class="boton-nuevo-juego"
+      (click)="nuevoJuego()"
+      [disabled]="cargando"
+    >
+      Nuevo juego
+    </button>
+
+    <!-- Cargando -->
+    <div
+      class="mensaje"
+      *ngIf="cargando"
+    >
+      Cargando imágenes...
+    </div>
+
+    <!-- Error -->
+    <div
+      class="mensaje error"
+      *ngIf="error"
+    >
+      {{ error }}
+    </div>
+
+    <!-- Tablero -->
+    <div
+      class="tablero"
+      *ngIf="!cargando && !error"
+    >
+
+      <div
+        class="carta"
+        *ngFor="let carta of cartas"
+        [class.encontrada]="carta.encontrada"
+        (click)="voltearCarta(carta)"
+      >
+
+        <div
+          class="carta-interior"
+          [class.volteada]="
+            carta.descubierta ||
+            carta.encontrada
+          "
+        >
+
+          <!-- Parte trasera -->
+          <div
+            class="carta-cara carta-trasera"
+          >
+            <span>?</span>
+          </div>
+
+          <!-- Parte frontal -->
+          <div
+            class="carta-cara carta-frontal"
+          >
+
+            <img
+              [src]="carta.imagen"
+              alt="Imagen de perro"
+            >
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>

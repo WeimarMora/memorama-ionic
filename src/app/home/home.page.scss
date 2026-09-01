@@ -1,0 +1,368 @@
+/* ==========================================
+   PÁGINA
+   ========================================== */
+
+ion-content {
+  --background: #f3f4f6;
+}
+
+ion-toolbar {
+  --background: #172033;
+  --color: #ffffff;
+}
+
+ion-title {
+  font-weight: 600;
+}
+
+
+/* ==========================================
+   CONTENEDOR
+   ========================================== */
+
+.contenedor-juego {
+  width: 100%;
+  max-width: 520px;
+
+  margin: 0 auto;
+  padding: 20px 16px 30px;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
+.encabezado-juego {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.encabezado-juego h1 {
+  margin: 0 0 8px;
+
+  color: #1f2937;
+
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.encabezado-juego p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+}
+
+
+/* ==========================================
+   ESTADÍSTICAS
+   ========================================== */
+
+.estadisticas {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.estadistica {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px;
+
+  background: #ffffff;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.estadistica .valor {
+  color: #172033;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.estadistica .etiqueta {
+  margin-top: 3px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   NUEVO JUEGO
+   ========================================== */
+
+.boton-nuevo-juego {
+  width: 100%;
+
+  margin-bottom: 18px;
+  padding: 13px 20px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #172033;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.1s ease,
+    background 0.15s ease;
+}
+
+.boton-nuevo-juego:hover {
+  background: #25334d;
+}
+
+.boton-nuevo-juego:active {
+  transform: scale(0.98);
+}
+
+.boton-nuevo-juego:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+
+/* ==========================================
+   MENSAJES
+   ========================================== */
+
+.mensaje {
+  margin-top: 20px;
+
+  padding: 20px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border-radius: 12px;
+
+  color: #374151;
+
+  font-size: 16px;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mensaje.error {
+  color: #b91c1c;
+}
+
+
+/* ==========================================
+   TABLERO
+   ========================================== */
+
+.tablero {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+
+/* ==========================================
+   CARTA
+   ========================================== */
+
+.carta {
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  perspective: 1000px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.carta.encontrada {
+  cursor: default;
+}
+
+
+/* ==========================================
+   INTERIOR
+   ========================================== */
+
+.carta-interior {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  transition:
+    transform 0.5s ease;
+
+  transform-style: preserve-3d;
+}
+
+.carta-interior.volteada {
+  transform: rotateY(180deg);
+}
+
+
+/* ==========================================
+   CARAS
+   ========================================== */
+
+.carta-cara {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  backface-visibility: hidden;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.20);
+}
+
+
+/* ==========================================
+   PARTE TRASERA
+   ========================================== */
+
+.carta-trasera {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #172033;
+
+  border: 3px solid #ffffff;
+
+  color: #ffffff;
+}
+
+.carta-trasera span {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   PARTE FRONTAL
+   ========================================== */
+
+.carta-frontal {
+  transform: rotateY(180deg);
+
+  background: #ffffff;
+
+  border: 3px solid #ffffff;
+}
+
+.carta-frontal img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* ==========================================
+   PAREJA ENCONTRADA
+   ========================================== */
+
+.carta.encontrada
+.carta-frontal {
+  border-color: #22c55e;
+
+  box-shadow:
+    0 0 0 2px #22c55e,
+    0 4px 10px rgba(0, 0, 0, 0.20);
+}
+
+
+/* ==========================================
+   CELULARES PEQUEÑOS
+   ========================================== */
+
+@media (max-width: 400px) {
+
+  .contenedor-juego {
+    padding:
+      16px 10px
+      25px;
+  }
+
+  .encabezado-juego {
+    margin-bottom: 14px;
+  }
+
+  .encabezado-juego h1 {
+    font-size: 25px;
+  }
+
+  .estadisticas {
+    margin-bottom: 10px;
+  }
+
+  .estadistica {
+    padding: 9px;
+  }
+
+  .estadistica .valor {
+    font-size: 19px;
+  }
+
+  .boton-nuevo-juego {
+    margin-bottom: 14px;
+    padding: 11px;
+  }
+
+  .tablero {
+    gap: 7px;
+  }
+
+  .carta-cara {
+    border-radius: 9px;
+  }
+
+  .carta-trasera span {
+    font-size: 30px;
+  }
+}
