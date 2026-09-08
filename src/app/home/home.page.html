@@ -4,9 +4,14 @@
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
 
   <div class="contenedor-juego">
+
+    <!-- ==========================================
+         ENCABEZADO
+         ========================================== -->
 
     <div class="encabezado-juego">
 
@@ -20,12 +25,45 @@
 
 
     <!-- ==========================================
+         JUGADOR ACTUAL
+         ========================================== -->
+
+    <div
+      class="jugador-actual"
+      *ngIf="nombreJugador"
+    >
+
+      <div>
+
+        <span class="jugador-etiqueta">
+          Jugador
+        </span>
+
+        <strong>
+          {{ nombreJugador }}
+        </strong>
+
+      </div>
+
+
+      <button
+        class="boton-cambiar-jugador"
+        (click)="abrirRegistroJugador()"
+      >
+        Cambiar
+      </button>
+
+    </div>
+
+
+    <!-- ==========================================
          ESTADÍSTICAS
          ========================================== -->
 
     <div class="estadisticas">
 
       <!-- Movimientos -->
+
       <div class="estadistica">
 
         <span class="valor">
@@ -40,6 +78,7 @@
 
 
       <!-- Parejas -->
+
       <div class="estadistica">
 
         <span class="valor">
@@ -53,11 +92,18 @@
       </div>
 
 
-      <!-- Mejor resultado histórico -->
+      <!-- Mejor resultado -->
+
       <div class="estadistica">
 
         <span class="valor">
-          {{ mejorResultado !== null ? mejorResultado : '--' }}
+
+          {{
+            mejorResultado !== null
+              ? mejorResultado
+              : '--'
+          }}
+
         </span>
 
         <span class="etiqueta">
@@ -70,16 +116,28 @@
 
 
     <!-- ==========================================
-         NUEVO JUEGO
+         BOTONES DEL JUEGO
          ========================================== -->
 
-    <button
-      class="boton-nuevo-juego"
-      (click)="nuevoJuego()"
-      [disabled]="cargando"
-    >
-      Nuevo juego
-    </button>
+    <div class="acciones-juego">
+
+      <button
+        class="boton-nuevo-juego"
+        (click)="nuevoJuego()"
+        [disabled]="cargando"
+      >
+        Nuevo juego
+      </button>
+
+
+      <button
+        class="boton-historial"
+        (click)="abrirHistorial()"
+      >
+        📋 Ver historial
+      </button>
+
+    </div>
 
 
     <!-- ==========================================
@@ -131,14 +189,18 @@
         >
 
           <!-- Parte trasera -->
+
           <div
             class="carta-cara carta-trasera"
           >
+
             <span>?</span>
+
           </div>
 
 
           <!-- Parte frontal -->
+
           <div
             class="carta-cara carta-frontal"
           >
@@ -157,5 +219,274 @@
     </div>
 
   </div>
+
+
+  <!-- ==========================================
+       MODAL 1
+       REGISTRO DEL JUGADOR
+       ========================================== -->
+
+  <ion-modal
+
+    [isOpen]="modalRegistroAbierto"
+
+    [initialBreakpoint]="0.45"
+
+    [breakpoints]="[0.45, 1]"
+
+    [backdropDismiss]="false"
+
+    (didDismiss)="modalCerrado()"
+
+  >
+
+    <ng-template>
+
+      <div class="modal-registro">
+
+        <div class="modal-handle"></div>
+
+
+        <div class="modal-icono">
+          👤
+        </div>
+
+
+        <h2>
+          ¿Quién está jugando?
+        </h2>
+
+
+        <p class="modal-descripcion">
+
+          Ingresa tu nombre para registrar
+          tu resultado en el historial.
+
+        </p>
+
+
+        <!-- INPUT DEL NOMBRE -->
+
+        <ion-input
+
+          label="Nombre del jugador"
+
+          labelPlacement="stacked"
+
+          fill="outline"
+
+          placeholder="Ejemplo: Weimar"
+
+          [(ngModel)]="nombreTemporal"
+
+          maxlength="40"
+
+          autocomplete="name"
+
+          (keyup.enter)="registrarJugador()"
+
+        >
+        </ion-input>
+
+
+        <!-- BOTÓN -->
+
+        <ion-button
+
+          expand="block"
+
+          class="boton-comenzar"
+
+          [disabled]="!nombreTemporal.trim()"
+
+          (click)="registrarJugador()"
+
+        >
+
+          Comenzar a jugar
+
+        </ion-button>
+
+
+        <p class="modal-nota">
+
+          La fecha y hora de la partida
+          se registrarán automáticamente.
+
+        </p>
+
+      </div>
+
+    </ng-template>
+
+  </ion-modal>
+
+
+  <!-- ==========================================
+       MODAL 2
+       HISTORIAL DE PARTIDAS
+       ========================================== -->
+
+  <ion-modal
+
+    [isOpen]="modalHistorialAbierto"
+
+    [initialBreakpoint]="0.75"
+
+    [breakpoints]="[0.5, 0.75, 1]"
+
+    (didDismiss)="historialCerrado()"
+
+  >
+
+    <ng-template>
+
+      <div class="modal-historial">
+
+        <!-- Barra del Sheet -->
+
+        <div class="modal-handle"></div>
+
+
+        <!-- Encabezado -->
+
+        <div class="historial-encabezado">
+
+          <div>
+
+            <h2>
+              Historial
+            </h2>
+
+            <p>
+              Resultados de las partidas jugadas
+            </p>
+
+          </div>
+
+
+          <button
+            class="boton-cerrar-historial"
+            (click)="cerrarHistorial()"
+          >
+            ✕
+          </button>
+
+        </div>
+
+
+        <!-- ======================================
+             SIN RESULTADOS
+             ====================================== -->
+
+        <div
+          class="historial-vacio"
+          *ngIf="historialOrdenado.length === 0"
+        >
+
+          <div class="historial-vacio-icono">
+            📋
+          </div>
+
+          <strong>
+            Aún no hay partidas registradas
+          </strong>
+
+          <p>
+            Completa una partida para que
+            aparezca aquí.
+          </p>
+
+        </div>
+
+
+        <!-- ======================================
+             LISTA DEL HISTORIAL
+             ====================================== -->
+
+        <div
+          class="lista-historial"
+          *ngIf="historialOrdenado.length > 0"
+        >
+
+          <div
+            class="resultado-historial"
+            *ngFor="
+              let resultado of historialOrdenado;
+              let i = index
+            "
+          >
+
+            <!-- Número -->
+
+            <div class="resultado-posicion">
+
+              {{ i + 1 }}
+
+            </div>
+
+
+            <!-- Información -->
+
+            <div class="resultado-info">
+
+              <strong>
+                {{ resultado.nombre }}
+              </strong>
+
+
+              <span class="resultado-fecha">
+
+                {{
+                  resultado.fecha
+                    | date:'dd/MM/yyyy - h:mm a'
+                }}
+
+              </span>
+
+            </div>
+
+
+            <!-- Movimientos -->
+
+            <div class="resultado-movimientos">
+
+              <strong>
+                {{ resultado.movimientos }}
+              </strong>
+
+              <span>
+                movimientos
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================
+             TOTAL DE PARTIDAS
+             ====================================== -->
+
+        <div
+          class="total-partidas"
+          *ngIf="historialOrdenado.length > 0"
+        >
+
+          Partidas registradas:
+
+          <strong>
+            {{ historialOrdenado.length }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </ng-template>
+
+  </ion-modal>
 
 </ion-content>

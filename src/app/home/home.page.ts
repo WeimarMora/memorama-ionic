@@ -6,32 +6,38 @@ import {
 
 import { CommonModule } from '@angular/common';
 
+import { FormsModule } from '@angular/forms';
+
 import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonContent
+  IonContent,
+  IonModal,
+  IonInput,
+  IonButton
 } from '@ionic/angular';
 
 import { Preferences } from '@capacitor/preferences';
 
 
 interface Carta {
-
   id: number;
-
   parejaId: number;
-
   imagen: string;
-
   descubierta: boolean;
-
   encontrada: boolean;
 }
 
 
-@Component({
+interface ResultadoHistorico {
+  nombre: string;
+  fecha: string;
+  movimientos: number;
+}
 
+
+@Component({
   selector: 'app-home',
 
   standalone: true,
@@ -41,42 +47,40 @@ interface Carta {
   styleUrls: ['home.page.scss'],
 
   imports: [
-
     CommonModule,
-
+    FormsModule,
     IonHeader,
-
     IonToolbar,
-
     IonTitle,
-
-    IonContent
-
+    IonContent,
+    IonModal,
+    IonInput,
+    IonButton
   ],
-
 })
 
 
 export class HomePage implements OnInit {
 
+  /*
+    ==================================================
+    DATOS DEL JUEGO
+    ==================================================
+  */
 
   imagenes: string[] = [];
 
   cartas: Carta[] = [];
 
-
   cargando = false;
 
   error = '';
-
 
   primeraCarta: Carta | null = null;
 
   segundaCarta: Carta | null = null;
 
-
   bloqueado = false;
-
 
   movimientos = 0;
 
@@ -86,35 +90,54 @@ export class HomePage implements OnInit {
 
 
   /*
-    Mejor resultado histórico.
-
-    null significa que todavía
-    no se ha completado ninguna partida.
+    ==================================================
+    MEJOR RESULTADO
+    ==================================================
   */
 
   mejorResultado: number | null = null;
 
 
+  /*
+    ==================================================
+    USUARIO
+    ==================================================
+  */
+
+  nombreJugador = '';
+
+  nombreTemporal = '';
+
+  modalRegistroAbierto = true;
+
+
+  /*
+    ==================================================
+    HISTORIAL
+    ==================================================
+  */
+
+  historialResultados: ResultadoHistorico[] = [];
+
+  modalHistorialAbierto = false;
+
+
   constructor(
-
     private cdr: ChangeDetectorRef
-
   ) {}
 
 
-  async ngOnInit() {
+  /*
+    ==================================================
+    INICIO DE LA APLICACIÓN
+    ==================================================
+  */
 
-    /*
-      Primero recuperamos el récord
-      guardado en el dispositivo.
-    */
+  async ngOnInit() {
 
     await this.cargarMejorResultado();
 
-
-    /*
-      Después iniciamos el juego.
-    */
+    await this.cargarHistorial();
 
     await this.cargarImagenes();
 
@@ -123,20 +146,122 @@ export class HomePage implements OnInit {
 
   /*
     ==================================================
-    PERSISTENCIA DEL MEJOR RESULTADO
+    MODAL - REGISTRO DEL JUGADOR
     ==================================================
   */
 
+  registrarJugador() {
+
+    const nombreLimpio =
+      this.nombreTemporal.trim();
+
+
+    if (!nombreLimpio) {
+      return;
+    }
+
+
+    this.nombreJugador =
+      nombreLimpio;
+
+
+    this.modalRegistroAbierto =
+      false;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  abrirRegistroJugador() {
+
+    this.nombreTemporal =
+      this.nombreJugador;
+
+
+    this.modalRegistroAbierto =
+      true;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  modalCerrado() {
+
+    this.modalRegistroAbierto =
+      false;
+
+  }
+
+
+  /*
+    ==================================================
+    MODAL - HISTORIAL
+    ==================================================
+  */
+
+  abrirHistorial() {
+
+    this.modalHistorialAbierto =
+      true;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  cerrarHistorial() {
+
+    this.modalHistorialAbierto =
+      false;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  historialCerrado() {
+
+    this.modalHistorialAbierto =
+      false;
+
+  }
+
+
+  /*
+    Devuelve una copia del historial
+    mostrando primero las partidas
+    más recientes.
+  */
+
+  get historialOrdenado(): ResultadoHistorico[] {
+
+    return [
+      ...this.historialResultados
+    ].reverse();
+
+  }
+
+
+  /*
+    ==================================================
+    CARGAR MEJOR RESULTADO
+    ==================================================
+  */
 
   async cargarMejorResultado() {
 
     try {
 
-      const resultado = await Preferences.get({
-
-        key: 'mejorResultado'
-
-      });
+      const resultado =
+        await Preferences.get({
+          key: 'mejorResultado'
+        });
 
 
       if (resultado.value !== null) {
@@ -149,11 +274,8 @@ export class HomePage implements OnInit {
     } catch (error) {
 
       console.error(
-
         'Error cargando mejor resultado:',
-
         error
-
       );
 
     }
@@ -161,20 +283,17 @@ export class HomePage implements OnInit {
   }
 
 
+  /*
+    ==================================================
+    VERIFICAR MEJOR RESULTADO
+    ==================================================
+  */
+
   async verificarMejorResultado() {
 
-    /*
-      Si nunca se ha guardado un récord,
-      la primera partida terminada se
-      convierte automáticamente en récord.
-    */
-
     if (
-
       this.mejorResultado === null ||
-
       this.movimientos < this.mejorResultado
-
     ) {
 
       this.mejorResultado =
@@ -185,17 +304,15 @@ export class HomePage implements OnInit {
 
         key: 'mejorResultado',
 
-        value: this.movimientos.toString()
+        value:
+          this.movimientos.toString()
 
       });
 
 
       console.log(
-
         'Nuevo mejor resultado:',
-
         this.mejorResultado
-
       );
 
     }
@@ -205,85 +322,224 @@ export class HomePage implements OnInit {
 
   /*
     ==================================================
-    CARGA DE IMÁGENES
+    CARGAR HISTORIAL
     ==================================================
   */
 
+  async cargarHistorial() {
+
+    try {
+
+      const resultado =
+        await Preferences.get({
+
+          key: 'historialResultados'
+
+        });
+
+
+      if (resultado.value !== null) {
+
+        this.historialResultados =
+          JSON.parse(
+            resultado.value
+          );
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        'Error cargando historial:',
+        error
+      );
+
+
+      this.historialResultados = [];
+
+    }
+
+  }
+
+
+  /*
+    ==================================================
+    GUARDAR RESULTADO EN HISTORIAL
+    ==================================================
+  */
+
+  async guardarResultadoHistorico() {
+
+    /*
+      No guardamos resultados
+      sin jugador registrado.
+    */
+
+    if (!this.nombreJugador.trim()) {
+      return;
+    }
+
+
+    /*
+      Creamos el resultado de la partida.
+    */
+
+    const nuevoResultado: ResultadoHistorico = {
+
+      nombre:
+        this.nombreJugador,
+
+      /*
+        Guardamos fecha y hora automáticamente
+        en formato ISO.
+      */
+
+      fecha:
+        new Date().toISOString(),
+
+      movimientos:
+        this.movimientos
+
+    };
+
+
+    /*
+      Añadimos el resultado al arreglo.
+    */
+
+    this.historialResultados.push(
+      nuevoResultado
+    );
+
+
+    /*
+      Preferences solamente almacena strings.
+
+      Convertimos el arreglo completo
+      a JSON antes de guardarlo.
+    */
+
+    await Preferences.set({
+
+      key:
+        'historialResultados',
+
+      value:
+        JSON.stringify(
+          this.historialResultados
+        )
+
+    });
+
+
+    console.log(
+      'Resultado guardado:',
+      nuevoResultado
+    );
+
+
+    console.log(
+      'Historial completo:',
+      this.historialResultados
+    );
+
+  }
+
+
+  /*
+    ==================================================
+    FINALIZAR PARTIDA
+    ==================================================
+  */
+
+  async finalizarPartida() {
+
+    /*
+      Guardamos:
+      nombre + fecha + movimientos
+    */
+
+    await this.guardarResultadoHistorico();
+
+
+    /*
+      También verificamos si
+      se consiguió una nueva mejor marca.
+    */
+
+    await this.verificarMejorResultado();
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  /*
+    ==================================================
+    CARGAR IMÁGENES
+    ==================================================
+  */
 
   async cargarImagenes() {
-
 
     this.cargando = true;
 
     this.error = '';
-
 
     this.cdr.detectChanges();
 
 
     try {
 
-
-      const respuesta = await fetch(
-
-        'https://dog.ceo/api/breeds/image/random/8'
-
-      );
+      const respuesta =
+        await fetch(
+          'https://dog.ceo/api/breeds/image/random/8'
+        );
 
 
       if (!respuesta.ok) {
 
         throw new Error(
-
           'No fue posible consultar la API'
-
         );
 
       }
 
 
-      const datos = await respuesta.json();
+      const datos =
+        await respuesta.json();
 
 
       if (datos.status !== 'success') {
 
         throw new Error(
-
           'La API respondió con un error'
-
         );
 
       }
 
 
-      this.imagenes = datos.message;
+      this.imagenes =
+        datos.message;
 
 
       this.crearCartas();
 
-
     } catch (error) {
 
-
       console.error(
-
         'Error consultando Dog CEO API:',
-
         error
-
       );
 
 
       this.error =
-
         'No fue posible cargar las imágenes del juego.';
-
 
     } finally {
 
-
       this.cargando = false;
-
 
       this.cdr.detectChanges();
 
@@ -294,63 +550,64 @@ export class HomePage implements OnInit {
 
   /*
     ==================================================
-    CREACIÓN DE CARTAS
+    CREAR CARTAS
     ==================================================
   */
 
-
   crearCartas() {
-
 
     const cartasTemporales: Carta[] = [];
 
 
     this.imagenes.forEach(
-
       (imagen, indice) => {
 
-
         cartasTemporales.push({
 
-          id: indice * 2,
+          id:
+            indice * 2,
 
-          parejaId: indice,
+          parejaId:
+            indice,
 
-          imagen: imagen,
+          imagen:
+            imagen,
 
-          descubierta: false,
+          descubierta:
+            false,
 
-          encontrada: false
+          encontrada:
+            false
 
         });
 
 
         cartasTemporales.push({
 
-          id: indice * 2 + 1,
+          id:
+            indice * 2 + 1,
 
-          parejaId: indice,
+          parejaId:
+            indice,
 
-          imagen: imagen,
+          imagen:
+            imagen,
 
-          descubierta: false,
+          descubierta:
+            false,
 
-          encontrada: false
+          encontrada:
+            false
 
         });
-
 
       }
-
     );
 
 
     this.cartas =
-
       this.barajarCartas(
-
         cartasTemporales
-
       );
 
   }
@@ -362,55 +619,35 @@ export class HomePage implements OnInit {
     ==================================================
   */
 
-
   barajarCartas(
-
     cartas: Carta[]
-
   ): Carta[] {
 
-
     const cartasBarajadas =
-
       [...cartas];
 
 
-    /*
-      Algoritmo Fisher-Yates
-    */
-
     for (
-
-      let i = cartasBarajadas.length - 1;
+      let i =
+        cartasBarajadas.length - 1;
 
       i > 0;
 
       i--
-
     ) {
 
-
       const j =
-
         Math.floor(
-
           Math.random() * (i + 1)
-
         );
 
 
       [
-
         cartasBarajadas[i],
-
         cartasBarajadas[j]
-
       ] = [
-
         cartasBarajadas[j],
-
         cartasBarajadas[i]
-
       ];
 
     }
@@ -423,51 +660,54 @@ export class HomePage implements OnInit {
 
   /*
     ==================================================
-    VOLTEAR CARTAS
+    VOLTEAR CARTA
     ==================================================
   */
 
-
   voltearCarta(
-
     carta: Carta
-
   ) {
+
+    /*
+      No permitimos jugar
+      mientras esté abierto
+      el modal de registro.
+    */
+
+    if (this.modalRegistroAbierto) {
+      return;
+    }
 
 
     if (this.bloqueado) {
-
       return;
-
     }
 
 
     if (carta.encontrada) {
-
       return;
-
     }
 
 
     if (carta.descubierta) {
-
       return;
-
     }
 
 
-    carta.descubierta = true;
+    carta.descubierta =
+      true;
 
 
     /*
       Primera carta.
     */
 
-    if (this.primeraCarta === null) {
+    if (
+      this.primeraCarta === null
+    ) {
 
-
-      this.primeraCarta = carta;
-
+      this.primeraCarta =
+        carta;
 
       return;
 
@@ -478,7 +718,8 @@ export class HomePage implements OnInit {
       Segunda carta.
     */
 
-    this.segundaCarta = carta;
+    this.segundaCarta =
+      carta;
 
 
     this.movimientos++;
@@ -495,16 +736,11 @@ export class HomePage implements OnInit {
     ==================================================
   */
 
-
   compararCartas() {
 
-
     if (
-
       this.primeraCarta === null ||
-
       this.segundaCarta === null
-
     ) {
 
       return;
@@ -512,81 +748,75 @@ export class HomePage implements OnInit {
     }
 
 
-    this.bloqueado = true;
+    this.bloqueado =
+      true;
 
 
     const sonPareja =
 
       this.primeraCarta.parejaId ===
-
       this.segundaCarta.parejaId;
 
 
     if (sonPareja) {
 
+      this.primeraCarta.encontrada =
+        true;
 
-      this.primeraCarta.encontrada = true;
-
-      this.segundaCarta.encontrada = true;
+      this.segundaCarta.encontrada =
+        true;
 
 
       this.parejasEncontradas++;
 
 
       /*
-        Cuando encontramos las 8 parejas,
-        la partida ha terminado.
+        Cuando se encuentran las 8 parejas,
+        termina la partida.
       */
 
       if (
-
         this.parejasEncontradas ===
         this.totalParejas
-
       ) {
 
-        void this.verificarMejorResultado();
+        void this.finalizarPartida();
 
       }
 
 
       setTimeout(() => {
 
-
         this.reiniciarSeleccion();
 
-
         this.cdr.detectChanges();
-
 
       }, 400);
 
 
     } else {
 
-
       setTimeout(() => {
-
 
         if (this.primeraCarta) {
 
-          this.primeraCarta.descubierta = false;
+          this.primeraCarta.descubierta =
+            false;
 
         }
 
 
         if (this.segundaCarta) {
 
-          this.segundaCarta.descubierta = false;
+          this.segundaCarta.descubierta =
+            false;
 
         }
 
 
         this.reiniciarSeleccion();
 
-
         this.cdr.detectChanges();
-
 
       }, 1000);
 
@@ -601,16 +831,16 @@ export class HomePage implements OnInit {
     ==================================================
   */
 
-
   reiniciarSeleccion() {
 
+    this.primeraCarta =
+      null;
 
-    this.primeraCarta = null;
+    this.segundaCarta =
+      null;
 
-    this.segundaCarta = null;
-
-
-    this.bloqueado = false;
+    this.bloqueado =
+      false;
 
   }
 
@@ -621,34 +851,42 @@ export class HomePage implements OnInit {
     ==================================================
   */
 
-
   async nuevoJuego() {
 
+    this.bloqueado =
+      true;
 
-    this.bloqueado = true;
 
+    this.primeraCarta =
+      null;
 
-    this.primeraCarta = null;
-
-    this.segundaCarta = null;
+    this.segundaCarta =
+      null;
 
 
     /*
-      Reiniciamos únicamente
-      los datos de la partida actual.
-
-      IMPORTANTE:
-      mejorResultado NO se reinicia.
+      Reiniciamos solamente
+      la partida actual.
     */
 
-    this.movimientos = 0;
+    this.movimientos =
+      0;
 
-    this.parejasEncontradas = 0;
+    this.parejasEncontradas =
+      0;
 
 
-    this.imagenes = [];
+    /*
+      El nombre del jugador,
+      el historial y la mejor marca
+      NO se eliminan.
+    */
 
-    this.cartas = [];
+    this.imagenes =
+      [];
+
+    this.cartas =
+      [];
 
 
     this.cdr.detectChanges();
@@ -657,7 +895,8 @@ export class HomePage implements OnInit {
     await this.cargarImagenes();
 
 
-    this.bloqueado = false;
+    this.bloqueado =
+      false;
 
 
     this.cdr.detectChanges();

@@ -17,7 +17,7 @@ ion-title {
 
 
 /* ==========================================
-   CONTENEDOR
+   CONTENEDOR PRINCIPAL
    ========================================== */
 
 .contenedor-juego {
@@ -37,7 +37,7 @@ ion-title {
 
 .encabezado-juego {
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .encabezado-juego h1 {
@@ -55,6 +55,68 @@ ion-title {
   color: #6b7280;
 
   font-size: 15px;
+}
+
+
+/* ==========================================
+   JUGADOR ACTUAL
+   ========================================== */
+
+.jugador-actual {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+  padding: 10px 14px;
+
+  background: #ffffff;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.jugador-actual > div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.jugador-etiqueta {
+  color: #6b7280;
+
+  font-size: 11px;
+}
+
+.jugador-actual strong {
+  color: #172033;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.boton-cambiar-jugador {
+  padding: 7px 12px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #e8eef8;
+  color: #172033;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.boton-cambiar-jugador:active {
+  transform: scale(0.96);
 }
 
 
@@ -112,13 +174,28 @@ ion-title {
 
 
 /* ==========================================
-   NUEVO JUEGO
+   ACCIONES DEL JUEGO
+   ========================================== */
+
+.acciones-juego {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+
+  margin-bottom: 18px;
+}
+
+
+/* ==========================================
+   BOTÓN NUEVO JUEGO
    ========================================== */
 
 .boton-nuevo-juego {
   width: 100%;
 
-  margin-bottom: 18px;
+  margin: 0;
   padding: 13px 20px;
 
   border: none;
@@ -148,6 +225,41 @@ ion-title {
 .boton-nuevo-juego:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+
+/* ==========================================
+   BOTÓN VER HISTORIAL
+   ========================================== */
+
+.boton-historial {
+  width: 100%;
+
+  margin: 0;
+  padding: 11px 20px;
+
+  border: 1px solid #d6dce6;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #172033;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.boton-historial:hover {
+  background: #edf1f7;
+}
+
+.boton-historial:active {
+  transform: scale(0.98);
 }
 
 
@@ -240,7 +352,7 @@ ion-title {
 
 
 /* ==========================================
-   CARAS
+   CARAS DE LAS CARTAS
    ========================================== */
 
 .carta-cara {
@@ -311,13 +423,512 @@ ion-title {
    PAREJA ENCONTRADA
    ========================================== */
 
-.carta.encontrada
-.carta-frontal {
+.carta.encontrada .carta-frontal {
   border-color: #22c55e;
 
   box-shadow:
     0 0 0 2px #22c55e,
     0 4px 10px rgba(0, 0, 0, 0.20);
+}
+
+
+/* ==========================================
+   CONFIGURACIÓN GENERAL DE LOS MODALES
+   ========================================== */
+
+ion-modal {
+  --background: #ffffff;
+
+  --border-radius:
+    22px 22px 0 0;
+
+  --box-shadow:
+    0 -8px 30px
+    rgba(0, 0, 0, 0.20);
+
+  --color: #172033;
+}
+
+
+/* Fondo oscuro */
+
+ion-modal::part(backdrop) {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+
+/* ==========================================
+   BARRA SUPERIOR DE LOS SHEET
+   ========================================== */
+
+.modal-handle {
+  width: 45px;
+  height: 5px;
+
+  margin:
+    2px auto
+    16px;
+
+  border-radius: 10px;
+
+  background: #b6bdc8;
+}
+
+
+/* ==========================================
+   MODAL DE REGISTRO
+   ========================================== */
+
+.modal-registro {
+  width: 100%;
+  min-height: 100%;
+
+  padding:
+    12px 22px
+    25px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  color: #172033;
+
+  text-align: center;
+}
+
+
+/* ==========================================
+   ICONO DEL MODAL DE REGISTRO
+   ========================================== */
+
+.modal-icono {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 58px;
+  height: 58px;
+
+  margin:
+    0 auto
+    12px;
+
+  border-radius: 50%;
+
+  background: #e8eef8;
+
+  font-size: 29px;
+}
+
+
+/* ==========================================
+   TÍTULO DEL MODAL DE REGISTRO
+   ========================================== */
+
+.modal-registro h2 {
+  margin:
+    0 0
+    8px;
+
+  color: #172033;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   DESCRIPCIÓN DEL MODAL DE REGISTRO
+   ========================================== */
+
+.modal-descripcion {
+  max-width: 330px;
+
+  margin:
+    0 auto
+    18px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+
+/* ==========================================
+   INPUT DEL MODAL
+   ========================================== */
+
+.modal-registro ion-input {
+  --background: #f8fafc;
+
+  --color: #172033;
+
+  --placeholder-color: #9ca3af;
+
+  --highlight-color-focused: #172033;
+
+  margin-bottom: 14px;
+
+  text-align: left;
+}
+
+
+/* ==========================================
+   BOTÓN COMENZAR
+   ========================================== */
+
+.boton-comenzar {
+  --background: #172033;
+
+  --background-hover: #25334d;
+
+  --background-activated: #25334d;
+
+  --color: #ffffff;
+
+  --border-radius: 10px;
+
+  height: 46px;
+
+  margin-top: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* ==========================================
+   NOTA DEL REGISTRO
+   ========================================== */
+
+.modal-nota {
+  margin:
+    14px 0
+    0;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+
+/* ==========================================
+   MODAL DEL HISTORIAL
+   ========================================== */
+
+.modal-historial {
+  width: 100%;
+  height: 100%;
+
+  padding:
+    12px 20px
+    30px;
+
+  box-sizing: border-box;
+
+  overflow-y: auto;
+
+  background: #ffffff;
+
+  /*
+    Esto corrige precisamente
+    el texto blanco que estás viendo.
+  */
+
+  color: #172033;
+}
+
+
+/* ==========================================
+   ENCABEZADO DEL HISTORIAL
+   ========================================== */
+
+.historial-encabezado {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 22px;
+}
+
+.historial-encabezado h2 {
+  margin:
+    0 0
+    4px;
+
+  color: #172033;
+
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.historial-encabezado p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+
+/* ==========================================
+   BOTÓN CERRAR HISTORIAL
+   ========================================== */
+
+.boton-cerrar-historial {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #edf1f7;
+
+  color: #172033;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.boton-cerrar-historial:hover {
+  background: #dde3ec;
+}
+
+.boton-cerrar-historial:active {
+  transform: scale(0.95);
+}
+
+
+/* ==========================================
+   HISTORIAL VACÍO
+   ========================================== */
+
+.historial-vacio {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 260px;
+
+  padding: 25px;
+
+  text-align: center;
+
+  color: #172033;
+}
+
+.historial-vacio-icono {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 65px;
+  height: 65px;
+
+  margin-bottom: 14px;
+
+  border-radius: 50%;
+
+  background: #edf1f7;
+
+  font-size: 30px;
+}
+
+.historial-vacio strong {
+  margin-bottom: 5px;
+
+  color: #172033;
+
+  font-size: 16px;
+}
+
+.historial-vacio p {
+  max-width: 260px;
+
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+/* ==========================================
+   LISTA DEL HISTORIAL
+   ========================================== */
+
+.lista-historial {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+
+/* ==========================================
+   RESULTADO INDIVIDUAL
+   ========================================== */
+
+.resultado-historial {
+  display: grid;
+
+  grid-template-columns:
+    40px 1fr auto;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 13px;
+
+  border:
+    1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  background: #f8fafc;
+
+  color: #172033;
+}
+
+
+/* ==========================================
+   NÚMERO DE LA PARTIDA
+   ========================================== */
+
+.resultado-posicion {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: #172033;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   INFORMACIÓN DEL RESULTADO
+   ========================================== */
+
+.resultado-info {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  gap: 3px;
+}
+
+.resultado-info strong {
+  overflow: hidden;
+
+  color: #172033;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================
+   FECHA
+   ========================================== */
+
+.resultado-fecha {
+  color: #6b7280;
+
+  font-size: 11px;
+}
+
+
+/* ==========================================
+   MOVIMIENTOS DEL RESULTADO
+   ========================================== */
+
+.resultado-movimientos {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  text-align: right;
+}
+
+.resultado-movimientos strong {
+  color: #172033;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.resultado-movimientos span {
+  color: #6b7280;
+
+  font-size: 10px;
+}
+
+
+/* ==========================================
+   TOTAL DE PARTIDAS
+   ========================================== */
+
+.total-partidas {
+  margin-top: 18px;
+
+  padding:
+    12px 14px;
+
+  border-radius: 10px;
+
+  background: #edf1f7;
+
+  color: #6b7280;
+
+  text-align: center;
+
+  font-size: 12px;
+}
+
+.total-partidas strong {
+  color: #172033;
 }
 
 
@@ -333,13 +944,27 @@ ion-title {
       25px;
   }
 
+
   .encabezado-juego {
     margin-bottom: 14px;
   }
 
+
   .encabezado-juego h1 {
     font-size: 25px;
   }
+
+
+  .jugador-actual {
+    padding:
+      8px 10px;
+  }
+
+
+  .jugador-actual strong {
+    font-size: 14px;
+  }
+
 
   .estadisticas {
     gap: 6px;
@@ -347,32 +972,124 @@ ion-title {
     margin-bottom: 10px;
   }
 
+
   .estadistica {
-    padding: 9px 4px;
+    padding:
+      9px 4px;
   }
+
 
   .estadistica .valor {
     font-size: 19px;
   }
 
+
   .estadistica .etiqueta {
     font-size: 10px;
   }
 
-  .boton-nuevo-juego {
+
+  .acciones-juego {
     margin-bottom: 14px;
+  }
+
+
+  .boton-nuevo-juego {
     padding: 11px;
   }
+
+
+  .boton-historial {
+    padding: 10px;
+  }
+
 
   .tablero {
     gap: 7px;
   }
 
+
   .carta-cara {
     border-radius: 9px;
   }
 
+
   .carta-trasera span {
     font-size: 30px;
   }
+
+
+  /* Modal registro */
+
+  .modal-registro {
+    padding:
+      10px 18px
+      22px;
+  }
+
+
+  .modal-icono {
+    width: 50px;
+    height: 50px;
+
+    font-size: 25px;
+  }
+
+
+  .modal-registro h2 {
+    font-size: 21px;
+  }
+
+
+  /* Modal historial */
+
+  .modal-historial {
+    padding:
+      10px 14px
+      25px;
+  }
+
+
+  .historial-encabezado h2 {
+    font-size: 22px;
+  }
+
+
+  .resultado-historial {
+    grid-template-columns:
+      34px 1fr auto;
+
+    gap: 8px;
+
+    padding: 10px;
+  }
+
+
+  .resultado-posicion {
+    width: 32px;
+    height: 32px;
+
+    font-size: 12px;
+  }
+
+
+  .resultado-info strong {
+    font-size: 13px;
+  }
+
+
+  .resultado-fecha {
+    font-size: 9px;
+  }
+
+
+  .resultado-movimientos strong {
+    font-size: 17px;
+  }
+
+
+  .resultado-movimientos span {
+    font-size: 8px;
+  }
+
 }
