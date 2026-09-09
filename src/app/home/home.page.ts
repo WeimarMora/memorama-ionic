@@ -97,6 +97,8 @@ export class HomePage implements OnInit {
 
   mejorResultado: number | null = null;
 
+  modalMejorMarcaAbierto = false;
+
 
   /*
     ==================================================
@@ -122,6 +124,15 @@ export class HomePage implements OnInit {
   modalHistorialAbierto = false;
 
 
+  /*
+    ==================================================
+    MODAL DE CONFIRMACIÓN PARA REINICIAR DATOS
+    ==================================================
+  */
+
+  modalReinicioAbierto = false;
+
+
   constructor(
     private cdr: ChangeDetectorRef
   ) {}
@@ -129,7 +140,7 @@ export class HomePage implements OnInit {
 
   /*
     ==================================================
-    INICIO DE LA APLICACIÓN
+    INICIO
     ==================================================
   */
 
@@ -234,8 +245,7 @@ export class HomePage implements OnInit {
 
 
   /*
-    Devuelve una copia del historial
-    mostrando primero las partidas
+    Mostramos primero las partidas
     más recientes.
   */
 
@@ -244,6 +254,163 @@ export class HomePage implements OnInit {
     return [
       ...this.historialResultados
     ].reverse();
+
+  }
+
+
+  /*
+    ==================================================
+    MODAL - NUEVA MEJOR MARCA
+    ==================================================
+  */
+
+  cerrarModalMejorMarca() {
+
+    this.modalMejorMarcaAbierto =
+      false;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  modalMejorMarcaCerrado() {
+
+    this.modalMejorMarcaAbierto =
+      false;
+
+  }
+
+
+  /*
+    ==================================================
+    MODAL - REINICIAR DATOS
+    ==================================================
+  */
+
+  solicitarReinicioDatos() {
+
+    /*
+      Cerramos el historial.
+    */
+
+    this.modalHistorialAbierto =
+      false;
+
+
+    /*
+      Después de la animación,
+      mostramos el modal de confirmación.
+    */
+
+    setTimeout(() => {
+
+      this.modalReinicioAbierto =
+        true;
+
+
+      this.cdr.detectChanges();
+
+    }, 250);
+
+  }
+
+
+  cancelarReinicioDatos() {
+
+    this.modalReinicioAbierto =
+      false;
+
+
+    /*
+      Volvemos al historial.
+    */
+
+    setTimeout(() => {
+
+      this.modalHistorialAbierto =
+        true;
+
+
+      this.cdr.detectChanges();
+
+    }, 250);
+
+  }
+
+
+  modalReinicioCerrado() {
+
+    this.modalReinicioAbierto =
+      false;
+
+  }
+
+
+  /*
+    ==================================================
+    CONFIRMAR REINICIO
+    ==================================================
+  */
+
+  async confirmarReinicioDatos() {
+
+    try {
+
+      /*
+        Eliminamos el historial
+        almacenado en Preferences.
+      */
+
+      await Preferences.remove({
+        key: 'historialResultados'
+      });
+
+
+      /*
+        Eliminamos también
+        la mejor marca.
+      */
+
+      await Preferences.remove({
+        key: 'mejorResultado'
+      });
+
+
+      /*
+        Limpiamos los datos
+        que están actualmente en memoria.
+      */
+
+      this.historialResultados = [];
+
+      this.mejorResultado = null;
+
+
+      /*
+        Cerramos el modal.
+      */
+
+      this.modalReinicioAbierto =
+        false;
+
+
+      console.log(
+        'Historial y mejor marca reiniciados'
+      );
+
+
+      this.cdr.detectChanges();
+
+    } catch (error) {
+
+      console.error(
+        'Error reiniciando los datos:',
+        error
+      );
+
+    }
 
   }
 
@@ -289,33 +456,57 @@ export class HomePage implements OnInit {
     ==================================================
   */
 
-  async verificarMejorResultado() {
+  async verificarMejorResultado(): Promise<boolean> {
 
-    if (
+    const esNuevaMejorMarca =
+
       this.mejorResultado === null ||
-      this.movimientos < this.mejorResultado
-    ) {
 
-      this.mejorResultado =
-        this.movimientos;
+      this.movimientos <
+      this.mejorResultado;
 
 
-      await Preferences.set({
+    /*
+      Si no mejoró el récord,
+      devolvemos false.
+    */
 
-        key: 'mejorResultado',
+    if (!esNuevaMejorMarca) {
 
-        value:
-          this.movimientos.toString()
-
-      });
-
-
-      console.log(
-        'Nuevo mejor resultado:',
-        this.mejorResultado
-      );
+      return false;
 
     }
+
+
+    /*
+      Actualizamos el mejor resultado.
+    */
+
+    this.mejorResultado =
+      this.movimientos;
+
+
+    /*
+      Lo guardamos permanentemente.
+    */
+
+    await Preferences.set({
+
+      key: 'mejorResultado',
+
+      value:
+        this.movimientos.toString()
+
+    });
+
+
+    console.log(
+      'Nueva mejor marca:',
+      this.mejorResultado
+    );
+
+
+    return true;
 
   }
 
@@ -364,35 +555,21 @@ export class HomePage implements OnInit {
 
   /*
     ==================================================
-    GUARDAR RESULTADO EN HISTORIAL
+    GUARDAR RESULTADO
     ==================================================
   */
 
   async guardarResultadoHistorico() {
-
-    /*
-      No guardamos resultados
-      sin jugador registrado.
-    */
 
     if (!this.nombreJugador.trim()) {
       return;
     }
 
 
-    /*
-      Creamos el resultado de la partida.
-    */
-
     const nuevoResultado: ResultadoHistorico = {
 
       nombre:
         this.nombreJugador,
-
-      /*
-        Guardamos fecha y hora automáticamente
-        en formato ISO.
-      */
 
       fecha:
         new Date().toISOString(),
@@ -403,26 +580,14 @@ export class HomePage implements OnInit {
     };
 
 
-    /*
-      Añadimos el resultado al arreglo.
-    */
-
     this.historialResultados.push(
       nuevoResultado
     );
 
 
-    /*
-      Preferences solamente almacena strings.
-
-      Convertimos el arreglo completo
-      a JSON antes de guardarlo.
-    */
-
     await Preferences.set({
 
-      key:
-        'historialResultados',
+      key: 'historialResultados',
 
       value:
         JSON.stringify(
@@ -437,12 +602,6 @@ export class HomePage implements OnInit {
       nuevoResultado
     );
 
-
-    console.log(
-      'Historial completo:',
-      this.historialResultados
-    );
-
   }
 
 
@@ -455,19 +614,32 @@ export class HomePage implements OnInit {
   async finalizarPartida() {
 
     /*
-      Guardamos:
-      nombre + fecha + movimientos
+      Guardamos siempre la partida.
     */
 
     await this.guardarResultadoHistorico();
 
 
     /*
-      También verificamos si
-      se consiguió una nueva mejor marca.
+      Verificamos el récord.
     */
 
-    await this.verificarMejorResultado();
+    const nuevaMejorMarca =
+      await this.verificarMejorResultado();
+
+
+    /*
+      Solamente mostramos el modal
+      cuando realmente se supera
+      la mejor marca.
+    */
+
+    if (nuevaMejorMarca) {
+
+      this.modalMejorMarcaAbierto =
+        true;
+
+    }
 
 
     this.cdr.detectChanges();
@@ -668,13 +840,17 @@ export class HomePage implements OnInit {
     carta: Carta
   ) {
 
-    /*
-      No permitimos jugar
-      mientras esté abierto
-      el modal de registro.
-    */
-
     if (this.modalRegistroAbierto) {
+      return;
+    }
+
+
+    if (this.modalMejorMarcaAbierto) {
+      return;
+    }
+
+
+    if (this.modalReinicioAbierto) {
       return;
     }
 
@@ -771,9 +947,8 @@ export class HomePage implements OnInit {
 
 
       /*
-        Cuando se encuentran las 8 parejas,
-        termina la partida.
-      */
+        Partida terminada.
+    */
 
       if (
         this.parejasEncontradas ===
@@ -864,11 +1039,6 @@ export class HomePage implements OnInit {
       null;
 
 
-    /*
-      Reiniciamos solamente
-      la partida actual.
-    */
-
     this.movimientos =
       0;
 
@@ -877,9 +1047,10 @@ export class HomePage implements OnInit {
 
 
     /*
-      El nombre del jugador,
-      el historial y la mejor marca
-      NO se eliminan.
+      NO eliminamos:
+      - jugador
+      - historial
+      - mejor marca
     */
 
     this.imagenes =

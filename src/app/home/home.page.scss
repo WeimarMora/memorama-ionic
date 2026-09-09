@@ -174,7 +174,7 @@ ion-title {
 
 
 /* ==========================================
-   ACCIONES DEL JUEGO
+   ACCIONES PRINCIPALES
    ========================================== */
 
 .acciones-juego {
@@ -208,10 +208,6 @@ ion-title {
   font-weight: 600;
 
   cursor: pointer;
-
-  transition:
-    transform 0.1s ease,
-    background 0.15s ease;
 }
 
 .boton-nuevo-juego:hover {
@@ -224,12 +220,11 @@ ion-title {
 
 .boton-nuevo-juego:disabled {
   opacity: 0.6;
-  cursor: default;
 }
 
 
 /* ==========================================
-   BOTÓN VER HISTORIAL
+   BOTÓN HISTORIAL
    ========================================== */
 
 .boton-historial {
@@ -248,10 +243,6 @@ ion-title {
   font-weight: 600;
 
   cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    transform 0.1s ease;
 }
 
 .boton-historial:hover {
@@ -281,9 +272,6 @@ ion-title {
   color: #374151;
 
   font-size: 16px;
-
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .mensaje.error {
@@ -308,7 +296,7 @@ ion-title {
 
 
 /* ==========================================
-   CARTA
+   CARTAS
    ========================================== */
 
 .carta {
@@ -319,20 +307,11 @@ ion-title {
   perspective: 1000px;
 
   cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
 }
 
 .carta.encontrada {
   cursor: default;
 }
-
-
-/* ==========================================
-   INTERIOR DE LA CARTA
-   ========================================== */
 
 .carta-interior {
   position: relative;
@@ -340,20 +319,15 @@ ion-title {
   width: 100%;
   height: 100%;
 
+  transform-style: preserve-3d;
+
   transition:
     transform 0.5s ease;
-
-  transform-style: preserve-3d;
 }
 
 .carta-interior.volteada {
   transform: rotateY(180deg);
 }
-
-
-/* ==========================================
-   CARAS DE LAS CARTAS
-   ========================================== */
 
 .carta-cara {
   position: absolute;
@@ -373,11 +347,6 @@ ion-title {
     0 4px 10px rgba(0, 0, 0, 0.20);
 }
 
-
-/* ==========================================
-   PARTE TRASERA
-   ========================================== */
-
 .carta-trasera {
   display: flex;
 
@@ -396,11 +365,6 @@ ion-title {
   font-weight: 700;
 }
 
-
-/* ==========================================
-   PARTE FRONTAL
-   ========================================== */
-
 .carta-frontal {
   transform: rotateY(180deg);
 
@@ -418,11 +382,6 @@ ion-title {
   object-fit: cover;
 }
 
-
-/* ==========================================
-   PAREJA ENCONTRADA
-   ========================================== */
-
 .carta.encontrada .carta-frontal {
   border-color: #22c55e;
 
@@ -433,11 +392,13 @@ ion-title {
 
 
 /* ==========================================
-   CONFIGURACIÓN GENERAL DE LOS MODALES
+   CONFIGURACIÓN GENERAL DE MODALES
    ========================================== */
 
 ion-modal {
   --background: #ffffff;
+
+  --color: #172033;
 
   --border-radius:
     22px 22px 0 0;
@@ -445,21 +406,12 @@ ion-modal {
   --box-shadow:
     0 -8px 30px
     rgba(0, 0, 0, 0.20);
-
-  --color: #172033;
 }
-
-
-/* Fondo oscuro */
 
 ion-modal::part(backdrop) {
-  background: rgba(15, 23, 42, 0.65);
+  background:
+    rgba(15, 23, 42, 0.65);
 }
-
-
-/* ==========================================
-   BARRA SUPERIOR DE LOS SHEET
-   ========================================== */
 
 .modal-handle {
   width: 45px;
@@ -476,7 +428,7 @@ ion-modal::part(backdrop) {
 
 
 /* ==========================================
-   MODAL DE REGISTRO
+   MODAL 1 - REGISTRO
    ========================================== */
 
 .modal-registro {
@@ -495,11 +447,6 @@ ion-modal::part(backdrop) {
 
   text-align: center;
 }
-
-
-/* ==========================================
-   ICONO DEL MODAL DE REGISTRO
-   ========================================== */
 
 .modal-icono {
   display: flex;
@@ -521,11 +468,6 @@ ion-modal::part(backdrop) {
   font-size: 29px;
 }
 
-
-/* ==========================================
-   TÍTULO DEL MODAL DE REGISTRO
-   ========================================== */
-
 .modal-registro h2 {
   margin:
     0 0
@@ -536,11 +478,6 @@ ion-modal::part(backdrop) {
   font-size: 23px;
   font-weight: 700;
 }
-
-
-/* ==========================================
-   DESCRIPCIÓN DEL MODAL DE REGISTRO
-   ========================================== */
 
 .modal-descripcion {
   max-width: 330px;
@@ -555,11 +492,6 @@ ion-modal::part(backdrop) {
   line-height: 1.4;
 }
 
-
-/* ==========================================
-   INPUT DEL MODAL
-   ========================================== */
-
 .modal-registro ion-input {
   --background: #f8fafc;
 
@@ -573,11 +505,6 @@ ion-modal::part(backdrop) {
 
   text-align: left;
 }
-
-
-/* ==========================================
-   BOTÓN COMENZAR
-   ========================================== */
 
 .boton-comenzar {
   --background: #172033;
@@ -598,11 +525,6 @@ ion-modal::part(backdrop) {
   font-weight: 600;
 }
 
-
-/* ==========================================
-   NOTA DEL REGISTRO
-   ========================================== */
-
 .modal-nota {
   margin:
     14px 0
@@ -616,7 +538,7 @@ ion-modal::part(backdrop) {
 
 
 /* ==========================================
-   MODAL DEL HISTORIAL
+   MODAL 2 - HISTORIAL
    ========================================== */
 
 .modal-historial {
@@ -633,18 +555,8 @@ ion-modal::part(backdrop) {
 
   background: #ffffff;
 
-  /*
-    Esto corrige precisamente
-    el texto blanco que estás viendo.
-  */
-
   color: #172033;
 }
-
-
-/* ==========================================
-   ENCABEZADO DEL HISTORIAL
-   ========================================== */
 
 .historial-encabezado {
   display: flex;
@@ -676,18 +588,11 @@ ion-modal::part(backdrop) {
   font-size: 13px;
 }
 
-
-/* ==========================================
-   BOTÓN CERRAR HISTORIAL
-   ========================================== */
-
 .boton-cerrar-historial {
   display: flex;
 
   align-items: center;
   justify-content: center;
-
-  flex-shrink: 0;
 
   width: 34px;
   height: 34px;
@@ -707,14 +612,6 @@ ion-modal::part(backdrop) {
   cursor: pointer;
 }
 
-.boton-cerrar-historial:hover {
-  background: #dde3ec;
-}
-
-.boton-cerrar-historial:active {
-  transform: scale(0.95);
-}
-
 
 /* ==========================================
    HISTORIAL VACÍO
@@ -728,7 +625,7 @@ ion-modal::part(backdrop) {
   align-items: center;
   justify-content: center;
 
-  min-height: 260px;
+  min-height: 220px;
 
   padding: 25px;
 
@@ -755,28 +652,15 @@ ion-modal::part(backdrop) {
   font-size: 30px;
 }
 
-.historial-vacio strong {
-  margin-bottom: 5px;
-
-  color: #172033;
-
-  font-size: 16px;
-}
-
 .historial-vacio p {
-  max-width: 260px;
-
-  margin: 0;
-
   color: #6b7280;
 
   font-size: 13px;
-  line-height: 1.4;
 }
 
 
 /* ==========================================
-   LISTA DEL HISTORIAL
+   LISTA DE RESULTADOS
    ========================================== */
 
 .lista-historial {
@@ -786,11 +670,6 @@ ion-modal::part(backdrop) {
 
   gap: 10px;
 }
-
-
-/* ==========================================
-   RESULTADO INDIVIDUAL
-   ========================================== */
 
 .resultado-historial {
   display: grid;
@@ -814,11 +693,6 @@ ion-modal::part(backdrop) {
   color: #172033;
 }
 
-
-/* ==========================================
-   NÚMERO DE LA PARTIDA
-   ========================================== */
-
 .resultado-posicion {
   display: flex;
 
@@ -838,11 +712,6 @@ ion-modal::part(backdrop) {
   font-weight: 700;
 }
 
-
-/* ==========================================
-   INFORMACIÓN DEL RESULTADO
-   ========================================== */
-
 .resultado-info {
   display: flex;
 
@@ -854,33 +723,17 @@ ion-modal::part(backdrop) {
 }
 
 .resultado-info strong {
-  overflow: hidden;
-
   color: #172033;
 
   font-size: 15px;
   font-weight: 700;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
 }
-
-
-/* ==========================================
-   FECHA
-   ========================================== */
 
 .resultado-fecha {
   color: #6b7280;
 
   font-size: 11px;
 }
-
-
-/* ==========================================
-   MOVIMIENTOS DEL RESULTADO
-   ========================================== */
 
 .resultado-movimientos {
   display: flex;
@@ -905,11 +758,6 @@ ion-modal::part(backdrop) {
   font-size: 10px;
 }
 
-
-/* ==========================================
-   TOTAL DE PARTIDAS
-   ========================================== */
-
 .total-partidas {
   margin-top: 18px;
 
@@ -933,6 +781,337 @@ ion-modal::part(backdrop) {
 
 
 /* ==========================================
+   BOTÓN REINICIAR DATOS
+   ========================================== */
+
+.boton-reiniciar-datos {
+  width: 100%;
+
+  margin-top: 12px;
+  padding: 11px 15px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius: 10px;
+
+  background: #fff5f5;
+
+  color: #b42318;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.boton-reiniciar-datos:hover {
+  background: #fee2e2;
+}
+
+.boton-reiniciar-datos:active {
+  transform: scale(0.98);
+}
+
+
+/* ==========================================
+   MODAL 3 - NUEVA MEJOR MARCA
+   ========================================== */
+
+.modal-record {
+  width: 100%;
+  min-height: 100%;
+
+  padding:
+    12px 24px
+    28px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  color: #172033;
+
+  text-align: center;
+}
+
+.record-trofeo {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 76px;
+  height: 76px;
+
+  margin:
+    4px auto
+    14px;
+
+  border-radius: 50%;
+
+  background: #fff4cc;
+
+  font-size: 40px;
+}
+
+.modal-record h2 {
+  margin:
+    0 0
+    8px;
+
+  color: #172033;
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.record-felicitacion {
+  margin:
+    0 0
+    16px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.record-felicitacion strong {
+  color: #172033;
+}
+
+.record-resultado {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 150px;
+
+  margin:
+    0 auto
+    16px;
+
+  padding:
+    14px 10px;
+
+  border-radius: 16px;
+
+  background: #edf1f7;
+}
+
+.record-resultado strong {
+  color: #172033;
+
+  font-size: 35px;
+  font-weight: 800;
+
+  line-height: 1;
+}
+
+.record-resultado span {
+  margin-top: 5px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+}
+
+.record-descripcion {
+  max-width: 300px;
+
+  margin:
+    0 auto
+    18px;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.boton-record {
+  --background: #172033;
+
+  --background-hover: #25334d;
+
+  --background-activated: #25334d;
+
+  --color: #ffffff;
+
+  --border-radius: 10px;
+
+  height: 46px;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   MODAL 4 - REINICIAR DATOS
+   ========================================== */
+
+.modal-reinicio {
+  width: 100%;
+  min-height: 100%;
+
+  padding:
+    12px 24px
+    28px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  color: #172033;
+
+  text-align: center;
+}
+
+
+/* Icono de advertencia */
+
+.reinicio-icono {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 68px;
+  height: 68px;
+
+  margin:
+    4px auto
+    14px;
+
+  border-radius: 50%;
+
+  background: #fff4e5;
+
+  font-size: 34px;
+}
+
+
+/* Título */
+
+.modal-reinicio h2 {
+  margin:
+    0 0
+    8px;
+
+  color: #172033;
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+
+/* Descripción */
+
+.reinicio-descripcion {
+  max-width: 340px;
+
+  margin:
+    0 auto
+    16px;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* Caja de advertencia */
+
+.reinicio-advertencia {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  max-width: 360px;
+
+  margin:
+    0 auto
+    18px;
+
+  padding:
+    12px 14px;
+
+  border:
+    1px solid #fed7aa;
+
+  border-radius: 10px;
+
+  background: #fff7ed;
+
+  text-align: left;
+}
+
+.reinicio-advertencia strong {
+  color: #9a3412;
+
+  font-size: 12px;
+}
+
+.reinicio-advertencia span {
+  color: #6b7280;
+
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+
+/* ==========================================
+   BOTONES DEL MODAL DE REINICIO
+   ========================================== */
+
+.acciones-reinicio {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 10px;
+}
+
+.boton-cancelar-reinicio {
+  --border-color: #cbd5e1;
+
+  --color: #172033;
+
+  --border-radius: 10px;
+
+  height: 45px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.boton-confirmar-reinicio {
+  --background: #b42318;
+
+  --background-hover: #912018;
+
+  --background-activated: #912018;
+
+  --color: #ffffff;
+
+  --border-radius: 10px;
+
+  height: 45px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* ==========================================
    CELULARES PEQUEÑOS
    ========================================== */
 
@@ -942,11 +1121,6 @@ ion-modal::part(backdrop) {
     padding:
       16px 10px
       25px;
-  }
-
-
-  .encabezado-juego {
-    margin-bottom: 14px;
   }
 
 
@@ -961,15 +1135,8 @@ ion-modal::part(backdrop) {
   }
 
 
-  .jugador-actual strong {
-    font-size: 14px;
-  }
-
-
   .estadisticas {
     gap: 6px;
-
-    margin-bottom: 10px;
   }
 
 
@@ -989,21 +1156,6 @@ ion-modal::part(backdrop) {
   }
 
 
-  .acciones-juego {
-    margin-bottom: 14px;
-  }
-
-
-  .boton-nuevo-juego {
-    padding: 11px;
-  }
-
-
-  .boton-historial {
-    padding: 10px;
-  }
-
-
   .tablero {
     gap: 7px;
   }
@@ -1014,44 +1166,12 @@ ion-modal::part(backdrop) {
   }
 
 
-  .carta-trasera span {
-    font-size: 30px;
-  }
-
-
-  /* Modal registro */
-
-  .modal-registro {
-    padding:
-      10px 18px
-      22px;
-  }
-
-
-  .modal-icono {
-    width: 50px;
-    height: 50px;
-
-    font-size: 25px;
-  }
-
-
-  .modal-registro h2 {
-    font-size: 21px;
-  }
-
-
-  /* Modal historial */
-
-  .modal-historial {
-    padding:
-      10px 14px
-      25px;
-  }
-
-
-  .historial-encabezado h2 {
-    font-size: 22px;
+  .modal-registro,
+  .modal-historial,
+  .modal-record,
+  .modal-reinicio {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
 
@@ -1068,8 +1188,6 @@ ion-modal::part(backdrop) {
   .resultado-posicion {
     width: 32px;
     height: 32px;
-
-    font-size: 12px;
   }
 
 
@@ -1088,8 +1206,8 @@ ion-modal::part(backdrop) {
   }
 
 
-  .resultado-movimientos span {
-    font-size: 8px;
+  .acciones-reinicio {
+    gap: 7px;
   }
 
 }

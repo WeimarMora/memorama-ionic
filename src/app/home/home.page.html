@@ -62,8 +62,6 @@
 
     <div class="estadisticas">
 
-      <!-- Movimientos -->
-
       <div class="estadistica">
 
         <span class="valor">
@@ -77,8 +75,6 @@
       </div>
 
 
-      <!-- Parejas -->
-
       <div class="estadistica">
 
         <span class="valor">
@@ -91,8 +87,6 @@
 
       </div>
 
-
-      <!-- Mejor resultado -->
 
       <div class="estadistica">
 
@@ -116,7 +110,7 @@
 
 
     <!-- ==========================================
-         BOTONES DEL JUEGO
+         BOTONES PRINCIPALES
          ========================================== -->
 
     <div class="acciones-juego">
@@ -188,18 +182,12 @@
           "
         >
 
-          <!-- Parte trasera -->
-
           <div
             class="carta-cara carta-trasera"
           >
-
             <span>?</span>
-
           </div>
 
-
-          <!-- Parte frontal -->
 
           <div
             class="carta-cara carta-frontal"
@@ -227,17 +215,11 @@
        ========================================== -->
 
   <ion-modal
-
     [isOpen]="modalRegistroAbierto"
-
     [initialBreakpoint]="0.45"
-
     [breakpoints]="[0.45, 1]"
-
     [backdropDismiss]="false"
-
     (didDismiss)="modalCerrado()"
-
   >
 
     <ng-template>
@@ -265,42 +247,24 @@
         </p>
 
 
-        <!-- INPUT DEL NOMBRE -->
-
         <ion-input
-
           label="Nombre del jugador"
-
           labelPlacement="stacked"
-
           fill="outline"
-
           placeholder="Ejemplo: Weimar"
-
           [(ngModel)]="nombreTemporal"
-
           maxlength="40"
-
           autocomplete="name"
-
           (keyup.enter)="registrarJugador()"
-
         >
         </ion-input>
 
 
-        <!-- BOTÓN -->
-
         <ion-button
-
           expand="block"
-
           class="boton-comenzar"
-
           [disabled]="!nombreTemporal.trim()"
-
           (click)="registrarJugador()"
-
         >
 
           Comenzar a jugar
@@ -324,26 +288,19 @@
 
   <!-- ==========================================
        MODAL 2
-       HISTORIAL DE PARTIDAS
+       HISTORIAL
        ========================================== -->
 
   <ion-modal
-
     [isOpen]="modalHistorialAbierto"
-
     [initialBreakpoint]="0.75"
-
     [breakpoints]="[0.5, 0.75, 1]"
-
     (didDismiss)="historialCerrado()"
-
   >
 
     <ng-template>
 
       <div class="modal-historial">
-
-        <!-- Barra del Sheet -->
 
         <div class="modal-handle"></div>
 
@@ -376,7 +333,7 @@
 
 
         <!-- ======================================
-             SIN RESULTADOS
+             HISTORIAL VACÍO
              ====================================== -->
 
         <div
@@ -388,9 +345,11 @@
             📋
           </div>
 
+
           <strong>
             Aún no hay partidas registradas
           </strong>
+
 
           <p>
             Completa una partida para que
@@ -401,7 +360,7 @@
 
 
         <!-- ======================================
-             LISTA DEL HISTORIAL
+             LISTA DE RESULTADOS
              ====================================== -->
 
         <div
@@ -417,16 +376,10 @@
             "
           >
 
-            <!-- Número -->
-
             <div class="resultado-posicion">
-
               {{ i + 1 }}
-
             </div>
 
-
-            <!-- Información -->
 
             <div class="resultado-info">
 
@@ -446,8 +399,6 @@
 
             </div>
 
-
-            <!-- Movimientos -->
 
             <div class="resultado-movimientos">
 
@@ -480,6 +431,196 @@
           <strong>
             {{ historialOrdenado.length }}
           </strong>
+
+        </div>
+
+
+        <!-- ======================================
+             REINICIAR HISTORIAL Y RÉCORD
+             ====================================== -->
+
+        <button
+          class="boton-reiniciar-datos"
+          *ngIf="
+            historialOrdenado.length > 0 ||
+            mejorResultado !== null
+          "
+          (click)="solicitarReinicioDatos()"
+        >
+
+          🗑 Reiniciar historial y récord
+
+        </button>
+
+      </div>
+
+    </ng-template>
+
+  </ion-modal>
+
+
+  <!-- ==========================================
+       MODAL 3
+       NUEVA MEJOR MARCA
+       ========================================== -->
+
+  <ion-modal
+    [isOpen]="modalMejorMarcaAbierto"
+    [initialBreakpoint]="0.48"
+    [breakpoints]="[0.48]"
+    [backdropDismiss]="false"
+    (didDismiss)="modalMejorMarcaCerrado()"
+  >
+
+    <ng-template>
+
+      <div class="modal-record">
+
+        <div class="modal-handle"></div>
+
+
+        <div class="record-trofeo">
+          🏆
+        </div>
+
+
+        <h2>
+          ¡Nueva mejor marca!
+        </h2>
+
+
+        <p class="record-felicitacion">
+
+          Excelente partida,
+          <strong>{{ nombreJugador }}</strong>
+
+        </p>
+
+
+        <div class="record-resultado">
+
+          <strong>
+            {{ mejorResultado }}
+          </strong>
+
+          <span>
+            movimientos
+          </span>
+
+        </div>
+
+
+        <p class="record-descripcion">
+
+          Has conseguido el mejor resultado
+          registrado hasta el momento.
+
+        </p>
+
+
+        <ion-button
+          expand="block"
+          class="boton-record"
+          (click)="cerrarModalMejorMarca()"
+        >
+
+          Continuar
+
+        </ion-button>
+
+      </div>
+
+    </ng-template>
+
+  </ion-modal>
+
+
+  <!-- ==========================================
+       MODAL 4
+       CONFIRMAR REINICIO
+       ========================================== -->
+
+  <ion-modal
+    [isOpen]="modalReinicioAbierto"
+    [initialBreakpoint]="0.38"
+    [breakpoints]="[0.38]"
+    [backdropDismiss]="false"
+    (didDismiss)="modalReinicioCerrado()"
+  >
+
+    <ng-template>
+
+      <div class="modal-reinicio">
+
+        <div class="modal-handle"></div>
+
+
+        <!-- Icono -->
+
+        <div class="reinicio-icono">
+          ⚠️
+        </div>
+
+
+        <!-- Título -->
+
+        <h2>
+          Reiniciar datos
+        </h2>
+
+
+        <!-- Explicación -->
+
+        <p class="reinicio-descripcion">
+
+          Se eliminarán permanentemente
+          el historial de partidas y
+          la mejor marca registrada.
+
+        </p>
+
+
+        <!-- Información adicional -->
+
+        <div class="reinicio-advertencia">
+
+          <strong>
+            Esta acción no se puede deshacer.
+          </strong>
+
+          <span>
+            El nombre del jugador actual
+            no será eliminado.
+          </span>
+
+        </div>
+
+
+        <!-- Botones -->
+
+        <div class="acciones-reinicio">
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            class="boton-cancelar-reinicio"
+            (click)="cancelarReinicioDatos()"
+          >
+
+            Cancelar
+
+          </ion-button>
+
+
+          <ion-button
+            expand="block"
+            class="boton-confirmar-reinicio"
+            (click)="confirmarReinicioDatos()"
+          >
+
+            Reiniciar
+
+          </ion-button>
 
         </div>
 
